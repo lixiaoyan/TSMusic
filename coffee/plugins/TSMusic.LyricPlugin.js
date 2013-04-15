@@ -326,7 +326,7 @@
         if (plugin.constructor.type === type) {
           switch (type) {
             case "file":
-              if (plugin.lyric_file) {
+              if (plugin.lyric_file && plugin.lyric_file.files.length) {
                 file_object = plugin.lyric_file.files[0];
                 if (/\.lrc$/i.test(file_object.name)) {
                   _results.push(TSMusic.File.read_text_from_blob(file_object, function(result) {

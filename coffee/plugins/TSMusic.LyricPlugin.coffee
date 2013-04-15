@@ -228,7 +228,7 @@ class TSMusic.LyricPlugin extends TSMusic.Plugin
             if plugin.constructor.type == type
                 switch type
                     when "file"
-                        if plugin.lyric_file
+                        if plugin.lyric_file and plugin.lyric_file.files.length
                             file_object = plugin.lyric_file.files[0]
                             if /\.lrc$/i.test file_object.name
                                 TSMusic.File.read_text_from_blob file_object,(result)=>
