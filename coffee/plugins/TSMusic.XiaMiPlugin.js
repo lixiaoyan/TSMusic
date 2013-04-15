@@ -30,6 +30,8 @@
             _this.lyric_url = /<lyric>(.*?)<\/lyric>/.exec(result)[1];
             return _this.widget.load(url);
           });
+        } else {
+          return alert("请输入正确的编号！");
         }
       };
       this.button.onclick = this.show.bind(this);

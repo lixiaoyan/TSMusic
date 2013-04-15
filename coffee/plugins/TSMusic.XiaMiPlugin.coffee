@@ -15,6 +15,8 @@ class TSMusic.XiaMiPlugin extends TSMusic.BrowsePlugin
                     url = @url_decode location
                     @lyric_url = /<lyric>(.*?)<\/lyric>/.exec(result)[1]
                     @widget.load url
+            else
+                alert "请输入正确的编号！"
         @button.onclick = @show.bind @
     url_decode: (id)->
         loc = id.indexOf "h"

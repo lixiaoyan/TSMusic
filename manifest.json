@@ -1,7 +1,7 @@
 {
     "name":"TSMusic",
     "description":"TSMusic音乐播放器",
-    "version":"0.2.1",
+    "version":"0.2.2",
     "manifest_version":2,
     "app":{
         "launch":{
