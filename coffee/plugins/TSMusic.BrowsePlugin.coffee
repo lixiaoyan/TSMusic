@@ -42,4 +42,4 @@ class TSMusic.BrowsePlugin extends TSMusic.Plugin
         @visible = false
         @div?.style.display = "none"
         @button?.className = ""
-        @widget.browse_type = @constructor.type
+        @widget.browse_type = ""

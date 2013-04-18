@@ -8,7 +8,7 @@ class TSMusic.SpectrumPlugin extends TSMusic.Plugin
         @canvas = document.getElementById "spectrum"
         @context = @canvas.getContext "2d"
         @visible_btn = document.getElementById "spectrum-visible"
-        @frequency = new Uint8Array(40)
+        @frequency = new Uint8Array(60)
         @visible = true
         @visible_btn.onclick = =>
             if @visible
@@ -31,8 +31,8 @@ class TSMusic.SpectrumPlugin extends TSMusic.Plugin
         @visible_btn.value = "打开频谱"
     on_update: ->
         if @visible
-            @context.clearRect 0,0,200,100
+            @context.clearRect 0,0,300,64
             @widget.audio_analyser.getByteFrequencyData @frequency
             for value,index in @frequency
-                value = value/3
-                @context.fillRect index*5,100-value,4,value
+                value = value/4
+                @context.fillRect index*5,64-value,4,value

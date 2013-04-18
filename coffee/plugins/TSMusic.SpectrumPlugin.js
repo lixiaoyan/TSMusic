@@ -20,7 +20,7 @@
       this.canvas = document.getElementById("spectrum");
       this.context = this.canvas.getContext("2d");
       this.visible_btn = document.getElementById("spectrum-visible");
-      this.frequency = new Uint8Array(40);
+      this.frequency = new Uint8Array(60);
       this.visible = true;
       this.visible_btn.onclick = function() {
         if (_this.visible) {
@@ -57,14 +57,14 @@
       var index, value, _i, _len, _ref, _results;
 
       if (this.visible) {
-        this.context.clearRect(0, 0, 200, 100);
+        this.context.clearRect(0, 0, 300, 64);
         this.widget.audio_analyser.getByteFrequencyData(this.frequency);
         _ref = this.frequency;
         _results = [];
         for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
           value = _ref[index];
-          value = value / 3;
-          _results.push(this.context.fillRect(index * 5, 100 - value, 4, value));
+          value = value / 4;
+          _results.push(this.context.fillRect(index * 5, 64 - value, 4, value));
         }
         return _results;
       }

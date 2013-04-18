@@ -97,7 +97,7 @@
       if ((_ref1 = this.button) != null) {
         _ref1.className = "";
       }
-      return this.widget.browse_type = this.constructor.type;
+      return this.widget.browse_type = "";
     };
 
     return BrowsePlugin;

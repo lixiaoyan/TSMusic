@@ -10,75 +10,87 @@
         <script type="text/javascript" src="coffee/TSMusic.js"></script>
         <script type="text/javascript" src="coffee/plugins/TSMusic.BrowsePlugin.js"></script>
         <script type="text/javascript" src="coffee/plugins/TSMusic.FilePlugin.js"></script>
-        <script type="text/javascript" src="coffee/plugins/TSMusic.XiaMiPlugin.js"></script>
+        <script type="text/javascript" src="coffee/plugins/TSMusic.AppPlugins.XiaMiPlugin.js"></script>
         <script type="text/javascript" src="coffee/plugins/TSMusic.LyricPlugin.js"></script>
         <script type="text/javascript" src="coffee/plugins/TSMusic.SpectrumPlugin.js"></script>
         <script type="text/javascript" src="main.js"></script>
     </head>
     <body>
         <div id="container">
-            <div id="introduction">
-                选择文件后点击确定就可以播放音乐。<br />
-                支持LRC/KRC歌词文件。<br />
-                音乐文件支持*.mp3/*.wav/*.ogg。<br />
-                仅支持Chrome浏览器。
-            </div>
-            <div id="browse-type-div">
-                选择方式：
-                <input id="browse-file" style="display: none;" type="button" value="从文件打开" />
-                <input id="browse-xiami" style="display: none;" type="button" value="从虾米网打开" />
-            </div>
-            <div id="file-div" class="browse-div" style="display: none;">
-                <div id="music-file-outer">
-                    <label for="music-file">
-                        音乐：
-                    </label>
-                    <div id="music-file-div">
-                        <input id="music-file" type="file" />
-                        <input id="music-file-btn" type="button" value="浏览文件" />
+            <div id="main">
+                <div id="introduction">
+                    选择文件后点击确定就可以播放音乐。<br />
+                    支持LRC/KRC歌词文件。<br />
+                    音乐文件支持*.mp3/*.wav/*.ogg。<br />
+                    仅支持Chrome浏览器。
+                </div>
+                <div id="browse-type-div">
+                    <input id="browse-file" style="display: none;" type="button" value="从文件打开" />
+                    <input id="browse-app-xiami" style="display: none;" type="button" value="从虾米网打开" />
+                </div>
+                <div id="file-div" class="browse-div" style="display: none;">
+                    <div id="music-file-outer">
+                        <label for="music-file">
+                            音乐：
+                        </label>
+                        <div id="music-file-div">
+                            <input id="music-file" type="file" />
+                            <input id="music-file-btn" type="button" value="浏览文件" />
+                        </div>
+                    </div>
+                    <div id="lyric-file-outer" style="display: none;">
+                        <label for="lyric-file">
+                            歌词：
+                        </label>
+                        <div id="lyric-file-div">
+                            <input id="lyric-file" type="file" />
+                            <input id="lyric-file-btn" type="button" value="浏览文件" />
+                        </div>
+                        （可选）
+                        <input id="change-lyric" type="button" value="更改歌词" />
+                    </div>
+                    <div id="submit-file-outer">
+                        <input id="submit-file" type="button" value="加载" />
                     </div>
                 </div>
-                <div id="lyric-file-outer" style="display: none;">
-                    <label for="lyric-file">
-                        歌词：
-                    </label>
-                    <div id="lyric-file-div">
-                        <input id="lyric-file" type="file" />
-                        <input id="lyric-file-btn" type="button" value="浏览文件" />
+                <div id="app-xiami-div" class="browse-div" style="display: none;">
+                    <div id="music-app-xiami-outer">
+                        <label for="music-app-xiami">
+                            编号：
+                        </label>
+                        <input id="music-app-xiami" type="text" />
                     </div>
-                    （可选）
-                    <input id="change-lyric" type="button" value="更改歌词" />
+                    <div id="submit-app-xiami-outer">
+                        <input id="submit-app-xiami" type="button" value="加载文件" />
+                    </div>
                 </div>
-                <div id="submit-file-outer">
-                    <input id="submit-file" type="button" value="加载" />
+                <div id="player-controls">
+                    <input disabled="disabled" id="toggle" type="button" value="播放" />
+                    <input disabled="disabled" id="slider" type="range" min="0" max="0" value="0" step="0.01" />
+                    <input id="mute" type="button" value="关闭音量" />
+                    <input id="volume" type="range" min="0" max="1" value="1" step="0.01" />
+                </div>
+                <div id="lyric-controls">
+                    <input id="lyric-forward" style="display: none;" type="button" value="歌词提前0.5秒" />
+                    <input id="lyric-backward" style="display: none;" type="button" value="歌词延后0.5秒" />
+                    <input id="lyric-visible" style="display: none;" type="button" value="关闭歌词" />
+                    <input id="desktop-lyric" style="display: none;" type="button" value="桌面歌词" />
+                    <input id="notification-lyric" style="display: none;" type="button" value="桌面提示歌词" />
+                </div>
+                <div id="other-controls">
+                    <input id="spectrum-visible" style="display: none;" type="button" value="关闭频谱" />
                 </div>
             </div>
-            <div id="xiami-div" class="browse-div" style="display: none;">
-                <div id="music-xiami-outer">
-                    <label for="music-xiami">
-                        编号：
-                    </label>
-                    <input id="music-xiami" type="text" />
+            <div id="visual">
+                <div id="visual-text">
+                    可视化
                 </div>
-                <div id="submit-xiami-outer">
-                    <input id="submit-xiami" type="button" value="加载" />
+                <div id="spectrum-div" style="display: none;">
+                    <canvas id="spectrum" width="300" height="64"></canvas>
                 </div>
-            </div>
-            <div id="player-controls">
-                <input disabled="disabled" id="toggle" type="button" value="播放" />
-                <input disabled="disabled" id="slider" type="range" min="0" max="0" value="0" step="0.01" />
-                <input id="mute" type="button" value="关闭音量" />
-                <input id="volume" type="range" min="0" max="1" value="1" step="0.01" />
-            </div>
-            <div id="other-controls">
-                控制：
-                <input id="lyric-forward" style="display: none;" type="button" value="歌词提前0.5秒" />
-                <input id="lyric-backward" style="display: none;" type="button" value="歌词延后0.5秒" />
-                <input id="lyric-visible" style="display: none;" type="button" value="关闭歌词" />
-                <input id="spectrum-visible" style="display: none;" type="button" value="关闭频谱" />
-            </div>
-            <div id="spectrum-div" style="display: none;">
-                <canvas id="spectrum" width="200" height="100"></canvas>
+                <div id="lyric-panel-div" style="display: none;">
+                    <canvas id="lyric-panel" width="300" height="200"></canvas>
+                </div>
             </div>
         </div>
         <canvas id="lyric" height="50" style="display: none;"></canvas>

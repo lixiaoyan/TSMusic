@@ -83,14 +83,20 @@ input[type=text]:focus
 }
 #container
 {
-    margin: 10px;
-    padding: 5px 5px 0 5px;
-    width: 500px;
-    border: 1px solid #000;
-    background-color: #ccc;
-    border-radius: 5px;
+    padding: 5px 0 5px 5px;
+    margin: 5px;
+    overflow: hidden;
 }
 #container > div
+{
+    float: left;
+    padding: 5px 5px 0 5px;
+    border: 1px solid #666;
+    background-color: #ccc;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+#container > div > div
 {
     margin-bottom: 5px;
     padding: 5px;
@@ -99,11 +105,11 @@ input[type=text]:focus
     border-radius: 5px;
     vertical-align: middle;
 }
-#container > div.browse-div
+#container > div > div.browse-div
 {
     padding-bottom: 0;
 }
-#container > div.browse-div > div
+#container > div > div.browse-div > div
 {
     margin-bottom: 5px;
 }
