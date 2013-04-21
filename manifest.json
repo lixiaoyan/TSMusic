@@ -1,15 +1,14 @@
 {
     "name":"TSMusic",
     "description":"TSMusic音乐播放器",
-    "version":"0.3",
+    "version":"0.4",
     "manifest_version":2,
     "app":{
-        "launch":{
-            "local_path":"index.html"
+        "background":{
+            "scripts":["background.js"]
         }
     },
     "permissions":[
-        "http://*/",
-        "notifications"
+        "http://*/"
     ]
 }

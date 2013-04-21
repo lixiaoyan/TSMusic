@@ -44,22 +44,6 @@
       this.canvas_width = 0;
       this.lyric_type = 0;
       this.visible = true;
-      this.chrome_app = typeof chrome !== "undefined" && chrome.extension;
-      if (this.chrome_app) {
-        this.notification_btn = document.getElementById("notification-lyric");
-        this.notification_window = null;
-        this.notification_visible = false;
-        this.notification_canvas = null;
-        this.notification_context = null;
-        this.notification_btn.onclick = function() {
-          if (_this.notification_visible) {
-            return _this.hide_notification();
-          } else {
-            return _this.show_notification();
-          }
-        };
-        window.onbeforeunload = this.hide_notification.bind(this);
-      }
       this.desktop_lyric_btn.onclick = function() {
         if (_this.lyric_type === 0) {
           return _this.change_type(1);
@@ -93,11 +77,7 @@
       this.desktop_lyric_btn.style.display = "";
       this.change_type(0);
       this.show();
-      this.clear_lyric();
-      if (this.chrome_app) {
-        this.notification_btn.style.display = "";
-        return this.hide_notification();
-      }
+      return this.clear_lyric();
     };
 
     LyricPlugin.prototype._uninit = function() {
@@ -108,11 +88,7 @@
       this.desktop_lyric_btn.style.display = "none";
       this.change_type(0);
       this.hide();
-      this.clear_lyric();
-      if (this.chrome_app) {
-        this.notification_btn.style.display = "none";
-        return this.hide_notification();
-      }
+      return this.clear_lyric();
     };
 
     LyricPlugin.prototype.change = function(time) {
@@ -141,34 +117,6 @@
           this.lyric_panel_div.style.display = "none";
           return this.desktop_lyric_btn.className = "on";
         }
-      }
-    };
-
-    LyricPlugin.prototype.show_notification = function() {
-      if (this.chrome_app) {
-        this.notification_visible = true;
-        this.notification_btn.className = "on";
-        this.notification_window = webkitNotifications.createHTMLNotification("coffee/plugins/TSMusic.LyricPlugin.html");
-        this.notification_window.show();
-        return this.notification_window.onclose = this.hide_notification.bind(this);
-      }
-    };
-
-    LyricPlugin.prototype.hide_notification = function() {
-      var _ref, _ref1;
-
-      if (this.chrome_app) {
-        this.notification_visible = false;
-        this.notification_btn.className = "";
-        if ((_ref = this.notification_window) != null) {
-          _ref.close();
-        }
-        if ((_ref1 = this.notification_window) != null) {
-          _ref1.cancel();
-        }
-        this.notification_window = null;
-        this.notification_canvas = null;
-        return this.notification_context = null;
       }
     };
 
@@ -239,15 +187,16 @@
     };
 
     LyricPlugin.prototype.draw_panel = function() {
-      var index, left, mask_width, temp, width, _results;
+      var index, left, mask_width, temp, top, width, _results;
 
       this.panel_context.clearRect(0, 0, 300, 200);
-      this.panel_context.font = "bold 16px 宋体";
+      this.panel_context.font = "bold 14px 宋体";
       this.panel_context.textBaseline = "middle";
       this.panel_context.textAlign = "left";
       width = this.panel_context.measureText(this.lyric_text).width;
       left = 150 - width / 2;
       mask_width = width * this.lyric_percent / 100;
+      top = -16 * this.lyric_percent / 100 + 8;
       if (left < 0) {
         if (150 > mask_width) {
           left = 0;
@@ -258,83 +207,25 @@
         }
       }
       this.panel_context.fillStyle = "#333";
-      this.panel_context.fillText(this.lyric_text, left, 100);
+      this.panel_context.fillText(this.lyric_text, left, 100 + top);
       this.panel_context.fillStyle = "#36f";
       this.panel_context.save();
       this.panel_context.beginPath();
-      this.panel_context.rect(left, 92, mask_width, 16);
+      this.panel_context.rect(left, 92 + top, mask_width, 16);
       this.panel_context.clip();
-      this.panel_context.fillText(this.lyric_text, left, 100);
+      this.panel_context.fillText(this.lyric_text, left, 100 + top);
       this.panel_context.restore();
-      this.panel_context.font = "12px 宋体";
+      this.panel_context.font = "14px 宋体";
       this.panel_context.textAlign = "center";
       this.panel_context.fillStyle = "#333";
       index = 1;
       _results = [];
-      while (index <= 6) {
+      while (index <= 7) {
         if (temp = this.lyric[this.lyric_index - index]) {
-          this.panel_context.fillText(temp.lyric, 150, 92 - index * 16 + 8);
+          this.panel_context.fillText(temp.lyric, 150, 92 - index * 16 + 8 + top);
         }
         if (temp = this.lyric[this.lyric_index + index]) {
-          this.panel_context.fillText(temp.lyric, 150, 108 + index * 16 - 8);
-        }
-        _results.push(index++);
-      }
-      return _results;
-    };
-
-    LyricPlugin.prototype.draw_notification = function() {
-      var index, left, mask_width, temp, width, win, _results;
-
-      if (!this.chrome_app) {
-        return;
-      }
-      if (!this.notification_context) {
-        win = chrome.extension.getViews({
-          type: "notification"
-        })[0];
-        if (!win) {
-          return;
-        }
-        this.notification_canvas = win.document.getElementById("lyric");
-        this.notification_context = this.notification_canvas.getContext("2d");
-      }
-      this.notification_context.clearRect(0, 0, 280, 120);
-      this.notification_context.font = "bold 16px 宋体";
-      this.notification_context.textBaseline = "middle";
-      this.notification_context.textAlign = "left";
-      width = this.notification_context.measureText(this.lyric_text).width;
-      left = 140 - width / 2;
-      mask_width = width * this.lyric_percent / 100;
-      if (left < 0) {
-        if (140 > mask_width) {
-          left = 0;
-        } else if (140 > width - mask_width) {
-          left = 280 - width;
-        } else {
-          left = 140 - mask_width;
-        }
-      }
-      this.notification_context.fillStyle = "#333";
-      this.notification_context.fillText(this.lyric_text, left, 60);
-      this.notification_context.fillStyle = "#36f";
-      this.notification_context.save();
-      this.notification_context.beginPath();
-      this.notification_context.rect(left, 52, mask_width, 16);
-      this.notification_context.clip();
-      this.notification_context.fillText(this.lyric_text, left, 60);
-      this.notification_context.restore();
-      this.notification_context.font = "12px 宋体";
-      this.notification_context.textAlign = "center";
-      this.notification_context.fillStyle = "#333";
-      index = 1;
-      _results = [];
-      while (index <= 3) {
-        if (temp = this.lyric[this.lyric_index - index]) {
-          this.notification_context.fillText(temp.lyric, 140, 52 - index * 16 + 8);
-        }
-        if (temp = this.lyric[this.lyric_index + index]) {
-          this.notification_context.fillText(temp.lyric, 140, 68 + index * 16 - 8);
+          this.panel_context.fillText(temp.lyric, 150, 108 + index * 16 - 8 + top);
         }
         _results.push(index++);
       }
@@ -482,7 +373,7 @@
     LyricPlugin.prototype.on_update = function() {
       var flag, index, time, value, _i, _len, _ref;
 
-      if (this.lyric && (this.visible || this.notification_visible)) {
+      if (this.lyric && this.visible) {
         time = this.widget.audio.currentTime * 1000;
         flag = false;
         _ref = this.lyric;
@@ -502,13 +393,10 @@
           this.lyric_percent = 0;
         }
         if (this.lyric_type === 0) {
-          this.draw_panel();
+          return this.draw_panel();
         } else {
           this.lyric_text = this.lyric_text || "Music...";
-          this.draw();
-        }
-        if (this.notification_visible) {
-          return this.draw_notification();
+          return this.draw();
         }
       }
     };

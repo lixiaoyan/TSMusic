@@ -48,19 +48,6 @@ class TSMusic.LyricPlugin extends TSMusic.Plugin
         @canvas_width = 0
         @lyric_type = 0
         @visible = true
-        @chrome_app = typeof chrome != "undefined" and chrome.extension
-        if @chrome_app
-            @notification_btn = document.getElementById "notification-lyric"
-            @notification_window = null
-            @notification_visible = false
-            @notification_canvas = null
-            @notification_context = null
-            @notification_btn.onclick = =>
-                if @notification_visible
-                    @hide_notification()
-                else
-                    @show_notification()
-            window.onbeforeunload = @hide_notification.bind @
         @desktop_lyric_btn.onclick = =>
             if @lyric_type == 0
                 @change_type 1
@@ -87,9 +74,6 @@ class TSMusic.LyricPlugin extends TSMusic.Plugin
         @change_type 0
         @show()
         @clear_lyric()
-        if @chrome_app
-            @notification_btn.style.display = ""
-            @hide_notification()
     _uninit: ->
         @div.style.display = "none"
         @visible_btn.style.display = "none"
@@ -99,9 +83,6 @@ class TSMusic.LyricPlugin extends TSMusic.Plugin
         @change_type 0
         @hide()
         @clear_lyric()
-        if @chrome_app
-            @notification_btn.style.display = "none"
-            @hide_notification()
     change: (time)->
         if @lyric
             for l in @lyric
@@ -117,22 +98,6 @@ class TSMusic.LyricPlugin extends TSMusic.Plugin
                 @canvas.style.display = ""
                 @lyric_panel_div.style.display = "none"
                 @desktop_lyric_btn.className = "on"
-    show_notification: ->
-        if @chrome_app
-            @notification_visible = true
-            @notification_btn.className = "on"
-            @notification_window = webkitNotifications.createHTMLNotification("coffee/plugins/TSMusic.LyricPlugin.html")
-            @notification_window.show()
-            @notification_window.onclose = @hide_notification.bind @
-    hide_notification: ->
-        if @chrome_app
-            @notification_visible = false
-            @notification_btn.className = ""
-            @notification_window?.close()
-            @notification_window?.cancel()
-            @notification_window = null
-            @notification_canvas = null
-            @notification_context = null
     show: ->
         @visible = true
         @canvas.style.display = ""
@@ -189,12 +154,13 @@ class TSMusic.LyricPlugin extends TSMusic.Plugin
         @context.restore()
     draw_panel: ->
         @panel_context.clearRect 0,0,300,200
-        @panel_context.font = "bold 16px 宋体"
+        @panel_context.font = "bold 14px 宋体"
         @panel_context.textBaseline = "middle"
         @panel_context.textAlign = "left"
         width = @panel_context.measureText(@lyric_text).width
         left = 150-width/2
         mask_width = width*@lyric_percent/100
+        top = -16*@lyric_percent/100+8
         if left < 0
             if 150 > mask_width
                 left = 0
@@ -203,65 +169,23 @@ class TSMusic.LyricPlugin extends TSMusic.Plugin
             else
                 left = 150-mask_width
         @panel_context.fillStyle = "#333"
-        @panel_context.fillText @lyric_text,left,100
+        @panel_context.fillText @lyric_text,left,100+top
         @panel_context.fillStyle = "#36f"
         @panel_context.save()
         @panel_context.beginPath()
-        @panel_context.rect left,92,mask_width,16
+        @panel_context.rect left,92+top,mask_width,16
         @panel_context.clip()
-        @panel_context.fillText @lyric_text,left,100
+        @panel_context.fillText @lyric_text,left,100+top
         @panel_context.restore()
-        @panel_context.font = "12px 宋体"
+        @panel_context.font = "14px 宋体"
         @panel_context.textAlign = "center"
         @panel_context.fillStyle = "#333"
         index = 1
-        while index <= 6
+        while index <= 7
             if temp = @lyric[@lyric_index-index]
-                @panel_context.fillText temp.lyric,150,92-index*16+8
+                @panel_context.fillText temp.lyric,150,92-index*16+8+top
             if temp = @lyric[@lyric_index+index]
-                @panel_context.fillText temp.lyric,150,108+index*16-8
-            index++
-    draw_notification: ->
-        unless @chrome_app
-            return
-        unless @notification_context
-            win = chrome.extension.getViews({type:"notification"})[0]
-            unless win
-                return
-            @notification_canvas = win.document.getElementById "lyric"
-            @notification_context = @notification_canvas.getContext "2d"
-        @notification_context.clearRect 0,0,280,120
-        @notification_context.font = "bold 16px 宋体"
-        @notification_context.textBaseline = "middle"
-        @notification_context.textAlign = "left"
-        width = @notification_context.measureText(@lyric_text).width
-        left = 140-width/2
-        mask_width = width*@lyric_percent/100
-        if left < 0
-            if 140 > mask_width
-                left = 0
-            else if 140 > width-mask_width
-                left = 280-width
-            else
-                left = 140-mask_width
-        @notification_context.fillStyle = "#333"
-        @notification_context.fillText @lyric_text,left,60
-        @notification_context.fillStyle = "#36f"
-        @notification_context.save()
-        @notification_context.beginPath()
-        @notification_context.rect left,52,mask_width,16
-        @notification_context.clip()
-        @notification_context.fillText @lyric_text,left,60
-        @notification_context.restore()
-        @notification_context.font = "12px 宋体"
-        @notification_context.textAlign = "center"
-        @notification_context.fillStyle = "#333"
-        index = 1
-        while index <= 3
-            if temp = @lyric[@lyric_index-index]
-                @notification_context.fillText temp.lyric,140,52-index*16+8
-            if temp = @lyric[@lyric_index+index]
-                @notification_context.fillText temp.lyric,140,68+index*16-8
+                @panel_context.fillText temp.lyric,150,108+index*16-8+top
             index++
     time_to_string: (time)->
         str = "["
@@ -350,7 +274,7 @@ class TSMusic.LyricPlugin extends TSMusic.Plugin
         @lyric_percent = 0
         @draw()
     on_update: ->
-        if @lyric and (@visible or @notification_visible)
+        if @lyric and @visible
             time = @widget.audio.currentTime*1000
             flag = false
             for value,index in @lyric
@@ -369,8 +293,6 @@ class TSMusic.LyricPlugin extends TSMusic.Plugin
             else
                 @lyric_text = @lyric_text or "Music..."
                 @draw()
-            if @notification_visible
-                @draw_notification()
     on_load: ->
         @clear_lyric()
         type = @widget.browse_type

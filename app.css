@@ -1,0 +1,40 @@
+*
+{
+    margin: 0;
+    padding: 0;
+}
+#header
+{
+    -webkit-app-region: drag;
+    background-color: #ccc;
+    border-bottom: 1px solid #666;
+    box-shadow: 0 0 5px #999;
+    overflow: hidden;
+    padding: 5px;
+}
+#title
+{
+    float: left;
+    line-height: 24px;
+    font-weight: bolder;
+}
+#close
+{
+    float: right;
+    width: 16px;
+    height: 16px;
+    padding: 3px;
+    border: 1px solid #666;
+    background-color: #eee;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #999;
+    -webkit-app-region: no-drag;
+}
+#close:hover
+{
+    background-color: #fff;
+}
+#close:active
+{
+    background-color: #aaa;
+}

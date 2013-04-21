@@ -2,7 +2,7 @@ window.addEventListener "load",->
     if TSMusic.test()
         main = new TSMusic.Main
         main.plug new TSMusic.FilePlugin
-        if typeof chrome != "undefined" and chrome.extension
+        if typeof chrome != "undefined" and chrome.app and chrome.app.window
             main.plug new TSMusic.AppPlugins.XiaMiPlugin
         main.plug new TSMusic.LyricPlugin
         main.plug new TSMusic.SpectrumPlugin

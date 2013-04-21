@@ -6,7 +6,7 @@
     if (TSMusic.test()) {
       main = new TSMusic.Main;
       main.plug(new TSMusic.FilePlugin);
-      if (typeof chrome !== "undefined" && chrome.extension) {
+      if (typeof chrome !== "undefined" && chrome.app && chrome.app.window) {
         main.plug(new TSMusic.AppPlugins.XiaMiPlugin);
       }
       main.plug(new TSMusic.LyricPlugin);
