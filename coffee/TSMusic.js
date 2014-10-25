@@ -294,7 +294,7 @@
       this.media_source = null;
       this.script_processor = this.audio_context.createScriptProcessor(4096);
       this.audio_analyser = this.audio_context.createAnalyser();
-      this.gain_node = this.audio_context.createGainNode();
+      this.gain_node = this.audio_context.createGain();
       this.script_processor.connect(this.audio_context.destination);
       this.audio_analyser.connect(this.gain_node);
       this.gain_node.connect(this.audio_context.destination);
