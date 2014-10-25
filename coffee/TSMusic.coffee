@@ -141,7 +141,7 @@ class TSMusic.Main extends TSMusic.Widget
         @media_source = null
         @script_processor = @audio_context.createScriptProcessor 4096
         @audio_analyser = @audio_context.createAnalyser()
-        @gain_node = @audio_context.createGainNode()
+        @gain_node = @audio_context.createGain()
         @script_processor.connect @audio_context.destination
         @audio_analyser.connect @gain_node
         @gain_node.connect @audio_context.destination
